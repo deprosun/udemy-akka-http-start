@@ -3,6 +3,7 @@ package part2_lowlevelserver
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.IncomingConnection
+import akka.http.scaladsl.model.headers.Location
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, StatusCode, StatusCodes, Uri}
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Sink}
@@ -168,6 +169,71 @@ object LowLevelApi extends App {
   //    connection.handleWith(streamBasedRequestHandler)
   //  }
   // shorthand version
-  Http().bindAndHandle(streamBasedRequestHandler, "localhost", 8082)
+  //  Http().bindAndHandle(streamBasedRequestHandler, "localhost", 8082)
 
+
+  /**
+   * Exercise: create your own HTTP server running on localhost on 8388, which replies
+   *  - with a welcome message on the "front door" localhost:8388
+   *  - with a proper HTML on localhost:8388/about
+   *  - with a 404 message otherwise
+   */
+
+  val myServer: HttpRequest => HttpResponse = {
+    case HttpRequest(HttpMethods.GET, Uri.Path("/"), _, _, _) => // method, URI, HTTP headers, content and the protocol (HTTP1.1/HTTP2.0)
+      HttpResponse(
+        StatusCodes.OK,
+        entity = HttpEntity(
+          ContentTypes.`text/html(UTF-8)`,
+          "Hello from the exercise front door!"
+        ))
+    case HttpRequest(HttpMethods.GET, Uri.Path("/about"), _, _, _) => // method, URI, HTTP headers, content and the protocol (HTTP1.1/HTTP2.0)
+      HttpResponse(
+        StatusCodes.OK,
+        entity = HttpEntity(
+          ContentTypes.`text/html(UTF-8)`,
+          """
+            |<html>
+            | <body>
+            |   Hello from Akka HTTP!
+            | </body>
+            |</html>
+            |""".stripMargin
+        ))
+
+    // path /search redirects to some other part of the our website/webapp/microservice
+    //  aka - browser needs to be told to make a request elsewhere when it tries to go to
+    //  /search
+    case HttpRequest(HttpMethods.GET, Uri.Path("/search"), _, _, _) =>
+      HttpResponse(
+        StatusCodes.Found,
+        headers = List(Location("http://google.com"))
+      )
+
+    case request: HttpRequest =>
+      request.discardEntityBytes()
+      // in production have a dedicated execution context to run your futures.
+      // running things on system dispatcher will starve your application actor
+      // system.
+      HttpResponse(
+        StatusCodes.NotFound,
+        entity = HttpEntity(
+          ContentTypes.`text/html(UTF-8)`,
+          """
+            |<html>
+            | <body>
+            |   OOPS!  The resource can't be found.
+            | </body>
+            |</html>
+            |""".stripMargin
+        )
+      )
+  }
+
+  val bindingFuture = Http().bindAndHandleSync(myServer, "localhost", 8388)
+
+  bindingFuture
+    .flatMap(binding => binding.unbind())
+    .onComplete(_ => system.terminate())
+  //    .onComplete(x => x.ter)
 }
