@@ -1,36 +1,29 @@
 # Akka HTTP Learning Project
 
-This repository is part of my learning journey through a Udemy course on Akka HTTP. It contains a suite of applications, each corresponding to a specific concept within the Akka HTTP framework. These applications are implemented in Scala and organized into distinct parts focusing on both the high-level and low-level server APIs provided by Akka HTTP.
+This repository is part of a learning pathway on Akka HTTP, structured around a Udemy course. It features a series of Scala applications, each designed to illustrate key concepts of the Akka HTTP framework. The applications are grouped into two categories, each focusing on a specific level of server abstraction within Akka HTTP: the low-level and high-level server APIs.
 
 ## Project Structure
 
-Applications are categorized into `part2_lowlevelserver` and `part3_highlevelserver`, representing the modules within the course:
+The codebase is organized into chapters within the `src/main/scala` directory, divided into low-level and high-level server applications.
 
-- `part2_lowlevelserver`: Applications demonstrating the low-level server API for detailed HTTP handling.
-- `part3_highlevelserver`: Applications exploring the high-level server API for building web services with Akka HTTP's routing DSL.
+### High-Level Server Chapters (`part3_highlevelserver`)
 
-```plaintext
-- src/
-  - main/
-    - scala/
-      - part2_lowlevelserver/
-        - LowLevelApi.scala
-        - LowLevelHttps.scala
-        - LowLevelRest.scala
-      - part3_highlevelserver/
-        - DirectivesBreakdown.scala
-        - HandlingRejections.scala
-        - HighLevelExample.scala
-        - HighLevelExercise.scala
-        - HighLevelIntro.scala
-        - MarshallingJSON.scala
-- README.md
-- build.sbt
-```
+- **DirectivesBreakdown.scala**: A detailed exploration of Akka HTTP's directives, showcasing their composition and usage in building routing trees.
+- **HighLevelExample.scala**: A practical example implementing a complete service using the high-level API, demonstrating its power and ease of use.
+- **HandlingRejections.scala**: Techniques for handling route rejections, including custom rejection handling, to return informative responses to the client.
+- **HighLevelExercise.scala**: Interactive exercises to apply the knowledge of the high-level API in hands-on coding challenges.
+- **HighLevelIntro.scala**: An introductory guide to the high-level API, setting up a basic server and introducing key concepts.
+- **MarshallingJSON.scala**: Instructions on how to marshal and unmarshal JSON payloads using Akka HTTP's integration with Spray JSON.
+
+### Low-Level Server Chapters (`part2_lowlevelserver`)
+
+- **LowLevelHttps.scala**: Configuring an HTTPS server with Akka HTTP's low-level API, with an emphasis on TLS and security.
+- **LowLevelRest.scala**: Constructing a RESTful API using the low-level server API for more granular control over request and response handling.
+- **LowLevelApi.scala**: A deep dive into Akka HTTP's low-level server API, exploring the building blocks of HTTP request handling.
 
 ## Build Configuration
 
-The `build.sbt` file is configured with the following settings and dependencies:
+The project is configured with the following `build.sbt`:
 
 ```scala
 name := "udemy-akka-http"
@@ -44,53 +37,39 @@ val akkaHttpVersion = "10.1.7"
 val scalaTestVersion = "3.0.5"
 
 libraryDependencies ++= Seq(
-  // Akka Streams
   "com.typesafe.akka" %% "akka-stream" % akkaVersion,
-  // Akka HTTP Core
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
-  // Akka HTTP Spray JSON for JSON marshalling
   "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
-  // Akka HTTP TestKit for testing
   "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion,
-  // Akka TestKit for Actor testing
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion,
-  // ScalaTest for general testing
   "org.scalatest" %% "scalatest" % scalaTestVersion
 )
 ```
 
-Make sure you have sbt installed on your machine to manage project dependencies and builds.
+Make sure sbt is installed on your system to manage dependencies and builds.
 
 ## Running the Applications
 
-To execute an application, run the following command in your terminal from the project root:
+To run an application, use sbt's `runMain` command in the terminal:
 
 ```sh
 sbt "runMain partX_subpackage.ObjectName"
 ```
 
-Replace `partX_subpackage.ObjectName` with the specific application's package and object name you wish to run. For example:
-
-```sh
-sbt "runMain part3_highlevelserver.DirectivesBreakdown"
-```
+Replace `partX_subpackage.ObjectName` with the actual package and object name for the application you want to run.
 
 ## Prerequisites
 
-To work on this project, you will need:
+The following prerequisites are necessary to build and run the applications:
 
-- Scala 2.12.8 or higher
-- sbt 1.x or higher
+- Scala 2.12.8
+- sbt 1.x
 - Java JDK 8 or higher
 
 ## Contributions
 
-I am open to suggestions and contributions that help improve the examples provided. If you have insights or enhancements, please fork the repository, make your changes, and create a pull request.
+Contributions to this project are welcome. If you have suggestions for improvement or want to add new examples, please fork the repository, make your changes, and submit a pull request.
 
 ## License
 
-The contents of this project are covered under the MIT License.
-
----
-
-Make sure to save this README in the root of your project directory. Adjust any sections as needed to fit the actual configuration and usage of your project.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
